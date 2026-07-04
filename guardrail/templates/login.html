@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 p-4" style="background-color: #1a202c; color: white;">
+    <h1 class="fw-bold mb-1">Pause</h1>
+    <p class="text-muted small mb-5">Bankless financial discipline</p>
+    
+    <div class="card w-100 border-0 shadow" style="max-width: 400px; color: #333;">
+        <div class="card-body p-4">
+            {% if error %}
+            <div class="alert alert-danger p-2 small">{{ error }}</div>
+            {% endif %}
+            
+            <a href="/login/google" class="btn btn-outline-dark w-100 fw-bold mb-3 d-flex align-items-center justify-content-center p-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="20" class="me-2"> 
+                Continue with Google
+            </a>
+            
+            <div class="d-flex align-items-center mb-3">
+                <hr class="flex-grow-1">
+                <span class="mx-2 text-muted small fw-bold">OR</span>
+                <hr class="flex-grow-1">
+            </div>
+            
+            <ul class="nav nav-tabs nav-justified mb-4" id="authTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active text-dark fw-bold" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Log In</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-dark fw-bold" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab">Sign Up</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Login Form -->
+                <div class="tab-pane fade show active" id="login" role="tabpanel">
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Username</label>
+                            <input type="text" class="form-control form-control-lg" name="username" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Password</label>
+                            <input type="password" class="form-control form-control-lg" name="password" required maxlength="72">
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 btn-lg fw-bold">Log In</button>
+                    </form>
+                </div>
+                
+                <!-- Signup Form -->
+                <div class="tab-pane fade" id="signup" role="tabpanel">
+                    <form action="/signup" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Full Name</label>
+                            <input type="text" class="form-control form-control-lg" name="full_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Username</label>
+                            <input type="text" class="form-control form-control-lg" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Password</label>
+                            <input type="password" class="form-control form-control-lg" name="password" required maxlength="72">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Confirm Password</label>
+                            <input type="password" class="form-control form-control-lg" name="confirm_password" required maxlength="72">
+                        </div>
+                        <button type="submit" class="btn btn-success-dark w-100 btn-lg fw-bold">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

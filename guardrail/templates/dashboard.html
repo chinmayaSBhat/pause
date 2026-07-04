@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Streak Banner -->
+<div class="bg-streak p-4 text-center">
+    <h2 class="m-0 fw-bold">🔥 {{ streak }} Day Streak</h2>
+    <p class="text-muted small m-0 mt-1">Manual savings discipline</p>
+</div>
+
+<!-- Intercept Form -->
+<div class="p-3 border-bottom">
+    <h5 class="fw-bold mb-3">Tempted to buy something?</h5>
+    <form action="/intercept" method="POST">
+        <div class="mb-3">
+            <input type="text" class="form-control form-control-lg" name="item_name" placeholder="What is it?" required>
+        </div>
+        <div class="mb-3 input-group input-group-lg">
+            <span class="input-group-text">₹</span>
+            <input type="number" step="0.01" class="form-control" name="price" placeholder="Cost" required>
+        </div>
+        <button type="submit" class="btn btn-dark w-100 btn-lg fw-bold">Calculate Cost in Hours</button>
+    </form>
+</div>
+
+<!-- Active Items List -->
+<div class="p-3 bg-light" style="min-height: 50vh;">
+    <h6 class="text-uppercase text-muted fw-bold mb-3">Cooling Items</h6>
+    
+    {% if not items %}
+    <div class="text-center p-4 bg-white border rounded text-muted">
+        No active temptations. Stay strong!
+    </div>
+    {% endif %}
+
+    {% for item in items %}
+    <div class="card mb-3 border-0 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title fw-bold m-0">{{ item.item_name }}</h5>
+                <span class="badge bg-warning text-dark fs-6 timer fw-bold" data-expires="{{ item.timer_expires_at.isoformat() }}Z">
+                    --:--:--
+                </span>
+            </div>
+            
+            <div class="mb-3">
+                <h3 class="text-danger fw-bold m-0">₹{{ "%.2f"|format(item.price) }}</h3>
+                <p class="text-danger small fw-bold mt-1 mb-0">
+                    ⚠ This costs you {{ item.hours_to_earn }} hours of labor.
+                </p>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <form action="/update-item/{{ item.item_id }}" method="POST" class="m-0">
+                    <input type="hidden" name="action" value="SAVED">
+                    <button type="submit" class="btn btn-success-dark w-100 fw-bold">I Saved It! 🎉</button>
+                </form>
+                <form action="/update-item/{{ item.item_id }}" method="POST" class="m-0">
+                    <input type="hidden" name="action" value="BOUGHT">
+                    <button type="submit" class="btn btn-outline-danger w-100 fw-bold">I Relapsed 😢</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const timers = document.querySelectorAll('.timer');
+    
+    function updateTimers() {
+        const now = new Date();
+        timers.forEach(timer => {
+            const expires = new Date(timer.getAttribute('data-expires'));
+            const diff = expires - now;
+            
+            if (diff <= 0) {
+                timer.textContent = "Ready";
+                timer.classList.remove('bg-warning', 'text-dark');
+                timer.classList.add('bg-success');
+            } else {
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff / (1000 * 60)) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+                
+                timer.textContent = 
+                    (h < 10 ? "0" + h : h) + ":" + 
+                    (m < 10 ? "0" + m : m) + ":" + 
+                    (s < 10 ? "0" + s : s);
+            }
+        });
+    }
+    
+    updateTimers();
+    setInterval(updateTimers, 1000);
+});
+</script>
+{% endblock %}
