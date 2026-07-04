@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-streak p-4 text-center">
+    <h2 class="m-0 fw-bold">Weekly Goals</h2>
+    <p class="text-muted small m-0 mt-1">Set limits. Build discipline.</p>
+</div>
+
+<div class="p-3 border-bottom">
+    <h5 class="fw-bold mb-3">Set a New Goal</h5>
+    <form action="/goals" method="POST">
+        <div class="mb-3 input-group input-group-lg">
+            <span class="input-group-text">₹</span>
+            <input type="number" step="1" class="form-control" name="goal_amount" placeholder="Target Amount to Save" required>
+        </div>
+        <div class="mb-3">
+            <select class="form-select" name="days">
+                <option value="7">Next 7 Days</option>
+                <option value="14">Next 14 Days</option>
+                <option value="30">Next 30 Days</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-dark w-100 fw-bold">Lock in Goal</button>
+    </form>
+</div>
+
+<div class="p-3 bg-light" style="min-height: 50vh;">
+    <h6 class="text-uppercase text-muted fw-bold mb-3">This Week's Progress</h6>
+    
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body text-center">
+            <h1 class="fw-bold text-success-dark m-0">₹{{ "%.2f"|format(saved_this_week) }}</h1>
+            <p class="text-muted small">Saved in the last 7 days</p>
+        </div>
+    </div>
+
+    <h6 class="text-uppercase text-muted fw-bold mb-3">Active Goals</h6>
+    {% if not goals %}
+        <div class="text-center p-4 bg-white border rounded text-muted">
+            No active goals. Challenge yourself today!
+        </div>
+    {% endif %}
+
+    {% for goal in goals %}
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="fw-bold">Save ₹{{ "%.0f"|format(goal.goal_amount) }}</h5>
+                <p class="text-muted small m-0">Deadline: {{ goal.end_date.strftime('%b %d, %Y') }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

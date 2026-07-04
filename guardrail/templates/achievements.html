@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-streak p-4 text-center">
+    <h2 class="m-0 fw-bold">Achievements</h2>
+    <p class="text-muted small m-0 mt-1">Your Lifetime Discipline</p>
+</div>
+
+<div class="row g-0 border-bottom text-center">
+    <div class="col-6 p-3 border-end">
+        <h2 class="fw-bold text-success-dark m-0">₹{{ "%.0f"|format(total_rupees) }}</h2>
+        <p class="text-muted small m-0 text-uppercase fw-bold">Total Saved</p>
+    </div>
+    <div class="col-6 p-3">
+        <h2 class="fw-bold text-primary m-0">{{ "%.1f"|format(total_hours) }}</h2>
+        <p class="text-muted small m-0 text-uppercase fw-bold">Hours Reclaimed</p>
+    </div>
+</div>
+
+<div class="p-3 bg-light" style="min-height: 50vh;">
+    <h6 class="text-uppercase text-muted fw-bold mb-3">Badges Earned</h6>
+    
+    {% if not badges %}
+        <div class="text-center p-4 bg-white border rounded text-muted">
+            You haven't unlocked any badges yet. Keep saving!
+        </div>
+    {% else %}
+        <div class="row">
+        {% for badge in badges %}
+            <div class="col-6 mb-3">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 mb-2">{{ badge.icon }}</div>
+                        <h6 class="fw-bold mb-1">{{ badge.name }}</h6>
+                        <p class="small text-muted m-0">{{ badge.desc }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if upcoming %}
+    <h6 class="text-uppercase text-muted fw-bold mb-3 mt-4">Next Badges</h6>
+    <div class="row opacity-75">
+        {% for badge in upcoming %}
+        <div class="col-6 mb-3">
+            <div class="card border-0 shadow-sm text-center h-100 bg-light">
+                <div class="card-body">
+                    <div class="display-4 mb-2 grayscale" style="filter: grayscale(100%); opacity: 0.5;">{{ badge.icon }}</div>
+                    <h6 class="fw-bold mb-1 text-muted">{{ badge.name }}</h6>
+                    <p class="small text-muted m-0">{{ badge.desc }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

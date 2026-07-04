@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-streak p-4 text-center">
+    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-dark text-white mb-2 shadow" style="width: 80px; height: 80px; font-size: 2rem;">
+        {{ user.first_name[0] | upper if user.first_name else user.username[0] | upper }}
+    </div>
+    <h2 class="m-0 fw-bold">{{ user.first_name or user.username }}</h2>
+    <p class="text-muted small m-0 mt-1">@{{ user.username }}</p>
+</div>
+
+<div class="p-3">
+    <form action="/profile" method="POST">
+        
+        <h6 class="text-muted text-uppercase fw-bold small ms-2 mb-2 mt-2">Cashflow Engine</h6>
+        <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+            <div class="card-body p-3">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold mb-1"><i class="bi bi-cash-stack text-success me-2"></i>Monthly Income</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0 fw-bold">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="monthly_income" value="{{ user.monthly_income or '' }}" placeholder="0" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label fw-bold mb-1"><i class="bi bi-clock-history text-primary me-2"></i>Hours Worked / Week</label>
+                    <div class="input-group mb-1">
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="work_hours_per_week" value="{{ user.work_hours_per_week or 40 }}" required>
+                        <span class="input-group-text bg-light border-0 small">hrs</span>
+                    </div>
+                    <div class="form-text small text-muted"><i class="bi bi-info-circle me-1"></i>We use your monthly income and weekly hours to dynamically calculate your exact Time-to-Value metric.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <h6 class="text-muted text-uppercase fw-bold small ms-2 mb-2 mt-2">Fixed Monthly Outflows</h6>
+        <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+            <div class="card-body p-3">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold mb-1 text-dark small"><i class="bi bi-house-door text-muted me-2"></i>Rent / Mortgage</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="expense_rent" value="{{ user.expense_rent or '' }}" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold mb-1 text-dark small"><i class="bi bi-bank text-muted me-2"></i>EMI / Debt Payments</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="expense_emi" value="{{ user.expense_emi or '' }}" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold mb-1 text-dark small"><i class="bi bi-arrow-repeat text-muted me-2"></i>Subscriptions</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="expense_subscriptions" value="{{ user.expense_subscriptions or '' }}" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold mb-1 text-dark small"><i class="bi bi-piggy-bank text-success me-2"></i>Savings / SIP (Optional)</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="expense_savings_sip" value="{{ user.expense_savings_sip or '' }}" placeholder="0">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label fw-bold mb-1 text-dark small"><i class="bi bi-three-dots text-muted me-2"></i>Other Necessities</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0">₹</span>
+                        <input type="number" step="1" class="form-control border-0 bg-light fw-bold text-dark" name="expense_other" value="{{ user.expense_other or '' }}" placeholder="0">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <h6 class="text-muted text-uppercase fw-bold small ms-2 mb-2">Behavioral Allocation (%)</h6>
+        <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+            <div class="card-body p-3">
+                <p class="small text-muted mb-3">Distribute your common impulses. (Total should equal 100%)</p>
+                
+                {% set categories = ["Online Shopping", "Daily Food & Coffee", "Subscribed Leakage", "Impulse Buying", "Entertainment"] %}
+                
+                {% for cat in categories %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="fw-bold mb-0 text-dark small">{{ cat }}</label>
+                    <div class="input-group" style="width: 110px;">
+                        <input type="number" min="0" max="100" class="form-control form-control-sm border-0 bg-light fw-bold text-center" name="alloc_{{ cat }}" value="{{ alloc_dict.get(cat, '') }}" placeholder="0">
+                        <span class="input-group-text bg-light border-0 small">%</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success-dark w-100 btn-lg fw-bold mb-4 rounded-pill shadow-sm">Save Preferences</button>
+    </form>
+    
+    <h6 class="text-muted text-uppercase fw-bold small ms-2 mb-2">Account Options</h6>
+    <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-body p-2">
+            <a href="/logout" class="btn btn-light text-danger w-100 fw-bold text-start p-3 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-box-arrow-right me-2"></i> Log Out</span>
+                <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

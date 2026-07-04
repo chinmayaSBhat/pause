@@ -1,0 +1,11 @@
+# Ignore Python build/artifacts and local secrets
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+.venv/
+*.env
+guardrail/.env
+guardrail/guardrail.db
+.DS_Store
